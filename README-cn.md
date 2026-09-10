@@ -73,4 +73,4 @@ public/                   # favicon 等静态资源
 
 ## 作者
 
-[OpenTecho Team](https://github.com/fengdonglu/opentecho)
+[OpenTecho Team](https://github.com/fengdonglu/OpenTecho)

@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          BASE_PATH: /opentecho/
+          BASE_PATH: /OpenTecho/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

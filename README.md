@@ -75,4 +75,4 @@ Built with Vibe Coding.
 
 ## Author
 
-[OpenTecho Team](https://github.com/fengdonglu/opentecho)
+[OpenTecho Team](https://github.com/fengdonglu/OpenTecho)

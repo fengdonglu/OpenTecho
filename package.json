@@ -9,20 +9,14 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:pdf": "node scripts/pdf-smoke.mjs",
-    "update:prototype": "vite-node scripts/update-prototype.mjs",
     "lint": "eslint . --ext vue,js,jsx,cjs,mjs,ts,tsx,cts,mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "element-plus": "^2.4.0",
-    "file-saver": "^2.0.0",
-    "html2canvas": "^1.4.0",
     "jspdf": "^2.5.0",
     "lunar-javascript": "^1.7.7",
     "pinia": "^2.1.0",
-    "vue": "^3.4.0",
-    "vue-i18n": "^9.8.0",
-    "vue-router": "^4.2.0"
+    "vue": "^3.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
@@ -51,9 +45,9 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/OpenTecho.git"
+    "url": "https://github.com/fengdonglu/OpenTecho.git"
   },
-  "homepage": "https://github.com/your-username/OpenTecho#readme",
+  "homepage": "https://github.com/fengdonglu/OpenTecho#readme",
   "engines": {
     "node": ">=20.19.4"
   }

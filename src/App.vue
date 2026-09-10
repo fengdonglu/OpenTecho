@@ -31,7 +31,7 @@ const collapsed = ref(
 )
 const appendixExpanded = ref(true)
 
-const GITHUB_URL = 'https://github.com/fengdonglu/opentecho.git'
+const GITHUB_URL = 'https://github.com/fengdonglu/OpenTecho.git'
 
 const t = computed(() => messages[language.value])
 
