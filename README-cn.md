@@ -2,6 +2,10 @@
 
 开源电子手帐生成器。网页即用、无需安装，按固定次序生成跨年手帐页面，支持 SVG / PDF 导出。
 
+> English version: [README.md](README.md)
+
+**在线体验：https://fengdonglu.github.io/OpenTecho/**
+
 ## 特性
 
 - **网页即用**：纯前端，无需安装，全部数据本地处理、不上传

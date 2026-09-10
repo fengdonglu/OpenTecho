@@ -4,6 +4,8 @@ An open-source digital planner generator. Runs entirely in the browser — no in
 
 > 中文说明见 [README-cn.md](README-cn.md)
 
+**Live Demo: https://fengdonglu.github.io/OpenTecho/**
+
 ## Features
 
 - **Runs in the browser**: pure frontend, no installation, all data processed locally (nothing is uploaded)
