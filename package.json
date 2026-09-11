@@ -1,6 +1,6 @@
 {
   "name": "opentecho",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "OpenTecho - 开源电子手帐生成器 / Open Source Digital Planner Generator",
   "type": "module",
   "scripts": {
