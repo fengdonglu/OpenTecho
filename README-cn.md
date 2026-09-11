@@ -18,6 +18,16 @@
 - **每周起始可配置**：周一 / 周日
 - **导出**：SVG（逐页或全部）、PDF（200dpi JPEG，B6 单页 125×176mm、对开 B5 250×176mm），带进度与取消
 
+## 界面截图
+
+| 三年年历 | 当年年历 |
+| --- | --- |
+| ![三年年历](docs/screenshots/01-three-year-calendar.png) | ![当年年历](docs/screenshots/02-current-year-calendar.png) |
+| **月历** | **周历** |
+| ![月历](docs/screenshots/03-monthly-calendar.png) | ![周历](docs/screenshots/04-weekly-calendar.png) |
+
+![会议记录](docs/screenshots/05-meeting-notes.png)
+
 ## 技术栈
 
 Vue 3 · TypeScript · Vite · Pinia · jsPDF · lunar-javascript

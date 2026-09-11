@@ -18,6 +18,16 @@ An open-source digital planner generator. Runs entirely in the browser — no in
 - **Configurable week start**: Monday / Sunday
 - **Export**: SVG (single page or all pages) or PDF (200dpi JPEG, B6 single page 125×176mm, B5 spread 250×176mm), with progress and cancel
 
+## Screenshots
+
+| Three-year calendar | Current-year calendar |
+| --- | --- |
+| ![Three-year calendar](docs/screenshots/01-three-year-calendar.png) | ![Current-year calendar](docs/screenshots/02-current-year-calendar.png) |
+| **Monthly** | **Weekly** |
+| ![Monthly calendar](docs/screenshots/03-monthly-calendar.png) | ![Weekly calendar](docs/screenshots/04-weekly-calendar.png) |
+
+![Meeting notes](docs/screenshots/05-meeting-notes.png)
+
 ## Tech Stack
 
 Vue 3 · TypeScript · Vite · Pinia · jsPDF · lunar-javascript
