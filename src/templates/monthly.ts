@@ -59,13 +59,14 @@ function monthCalendar(
     .join('')
   parts += group(dowGroup)
 
+  // 周序号：仅数字，居中于月历框左侧背景网格的十字交叉点（局部 x=-5 → page 20）
   const weekNumbers = Array.from({ length: rowCount }, (_, row) =>
-    text(`W${row + 1}`, {
-      x: -2,
+    text(String(row + 1), {
+      x: -5,
       y: row * CELL_H + CELL_H / 2,
-      'font-size': 2.8,
-      fill: '#666',
-      'text-anchor': 'end',
+      'font-size': 2.2,
+      fill: 'var(--muted)',
+      'text-anchor': 'middle',
       'dominant-baseline': 'middle',
     })
   ).join('')

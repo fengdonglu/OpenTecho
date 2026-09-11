@@ -25,6 +25,11 @@ export interface LocaleMessages {
   useTheme: string
   prevPage: string
   nextPage: string
+  preview: string
+  previewEmpty: string
+  pdfFailed: string
+  cancel: string
+  install: string
   collapse: string
   expand: string
   groupPrevYearQ4: (year: number) => string
@@ -74,6 +79,11 @@ export const messages: Record<Language, LocaleMessages> = {
     useTheme: '主题色',
     prevPage: '上一页',
     nextPage: '下一页',
+    preview: '手帐页面预览',
+    previewEmpty: '暂无预览',
+    pdfFailed: 'PDF 导出失败，请重试。',
+    cancel: '取消',
+    install: '安装应用',
     collapse: '折叠',
     expand: '展开',
     groupPrevYearQ4: year => `${year}年 Q4`,
@@ -85,6 +95,7 @@ export const messages: Record<Language, LocaleMessages> = {
     introTitle: '使用说明',
     introItems: [
       '网页即用，无需安装',
+      '可安装为应用，支持离线使用',
       '多主题可选（极简 / 樱花 / 奶茶 / 柠檬 / 抹茶 / 青 / 靛蓝 / 葡萄）',
       '跨年编排：上年 Q4 + 全年 + 次年 Q1',
       '内置农历与常见节日',
@@ -129,6 +140,11 @@ export const messages: Record<Language, LocaleMessages> = {
     useTheme: '主題色',
     prevPage: '上一頁',
     nextPage: '下一頁',
+    preview: '手帳頁面預覽',
+    previewEmpty: '暫無預覽',
+    pdfFailed: 'PDF 匯出失敗，請重試。',
+    cancel: '取消',
+    install: '安裝應用',
     collapse: '摺疊',
     expand: '展開',
     groupPrevYearQ4: year => `${year}年 Q4`,
@@ -140,6 +156,7 @@ export const messages: Record<Language, LocaleMessages> = {
     introTitle: '使用說明',
     introItems: [
       '網頁即用，無需安裝',
+      '可安裝為應用，支援離線使用',
       '多主題可選（極簡 / 櫻花 / 奶茶 / 檸檬 / 抹茶 / 青 / 靛藍 / 葡萄）',
       '跨年編排：上年 Q4 + 全年 + 次年 Q1',
       '內建農曆與常見節日',
@@ -184,6 +201,11 @@ export const messages: Record<Language, LocaleMessages> = {
     useTheme: 'Theme',
     prevPage: 'Prev',
     nextPage: 'Next',
+    preview: 'Planner page preview',
+    previewEmpty: 'No preview',
+    pdfFailed: 'PDF export failed. Please try again.',
+    cancel: 'Cancel',
+    install: 'Install app',
     collapse: 'Collapse',
     expand: 'Expand',
     groupPrevYearQ4: year => `${year} Q4`,
@@ -208,6 +230,7 @@ export const messages: Record<Language, LocaleMessages> = {
     introTitle: 'Getting Started',
     introItems: [
       'Use in the browser, no install needed',
+      'Installable as an app, works offline',
       'Multiple themes (Minimal / Sakura / Milk Tea / Lemon / Matcha / Cyan / Indigo / Grape)',
       'Cross-year layout: prev Q4 + full year + next Q1',
       'Built-in lunar calendar & common holidays',

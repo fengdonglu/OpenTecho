@@ -1,10 +1,8 @@
 import { jsPDF } from 'jspdf'
+import { renderAllPages } from '@/utils/pdfRender'
+import type { PdfExportOptions, PdfPage } from '@/utils/pdfRender'
 
-export interface PdfPage {
-  svg: string
-  widthMm: number
-  heightMm: number
-}
+export type { PdfExportOptions, PdfPage }
 
 /**
  * 清洗 SVG 使其能被 <img> 可靠加载：
@@ -65,11 +63,17 @@ function svgToPng(svg: string, widthMm: number, heightMm: number): Promise<strin
   })
 }
 
-export async function exportPdf(pages: PdfPage[], filename: string): Promise<void> {
+export async function exportPdf(
+  pages: PdfPage[],
+  filename: string,
+  options: PdfExportOptions = {}
+): Promise<void> {
   if (pages.length === 0) return
 
   const orientationOf = (w: number, h: number): 'landscape' | 'portrait' =>
     w > h ? 'landscape' : 'portrait'
+
+  const images = await renderAllPages(pages, { render: svgToPng }, options)
 
   const first = pages[0]
   const pdf = new jsPDF({
@@ -83,8 +87,7 @@ export async function exportPdf(pages: PdfPage[], filename: string): Promise<voi
     if (i > 0) {
       pdf.addPage([page.widthMm, page.heightMm], orientationOf(page.widthMm, page.heightMm))
     }
-    const dataUrl = await svgToPng(page.svg, page.widthMm, page.heightMm)
-    pdf.addImage(dataUrl, 'JPEG', 0, 0, page.widthMm, page.heightMm)
+    pdf.addImage(images[i], 'JPEG', 0, 0, page.widthMm, page.heightMm)
   }
 
   pdf.save(filename)

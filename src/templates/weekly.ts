@@ -16,7 +16,7 @@ const PANEL_POS = [
   { x: 130, y: 90 }, // 周六
   { x: 190, y: 90 }, // 周日
 ]
-const PANEL_BORDER_PATH = `M2 0 L18 0 M32 0 L48 0 Q50 0 50 2 L50 73 Q50 75 48 75 L2 75 Q0 75 0 73 L0 2 Q0 0 2 0`
+const PANEL_BORDER_PATH = `M2 0 L20 0 M30 0 L48 0 Q50 0 50 2 L50 73 Q50 75 48 75 L2 75 Q0 75 0 73 L0 2 Q0 0 2 0`
 const EN_WEEKDAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
 
 function weeklyStyle(theme: ThemeConfig): string {
@@ -24,14 +24,14 @@ function weeklyStyle(theme: ThemeConfig): string {
     '<style>' +
     `:root{--accent:${theme.accent};--panel-stroke:${theme.line};--cross-stroke:${theme.hair}}` +
     'text{font-family:"Inter","Segoe UI","Noto Sans SC","PingFang SC",system-ui,sans-serif;fill:var(--ink)}' +
-    '.month-large{font-size:12px;font-weight:800;fill:var(--accent)}' +
+    '.month-large{font-size:13px;font-weight:800;fill:var(--accent)}' +
     '.year-small{font-size:3.4px;fill:var(--muted)}' +
     '.mini-head{font-size:1.4px;fill:var(--muted)}' +
     '.mini-day{font-size:1.4px;fill:var(--muted)}' +
     '.mini-current{font-size:1.4px;font-weight:bold;fill:var(--ink)}' +
     '.mini-weekbg{fill:var(--accent);fill-opacity:.18}' +
-    '.panel-border{fill:none;stroke:var(--panel-stroke);stroke-width:.35}' +
-    '.badge{fill:none;stroke:var(--panel-stroke);stroke-width:.2}' +
+    '.panel-border{fill:none;stroke:var(--panel-stroke);stroke-width:.22}' +
+    '.badge{fill:none;stroke:var(--panel-stroke);stroke-width:.18}' +
     '.panel-date{font-size:4px;font-weight:bold;fill:var(--ink)}' +
     '.weekday-small{font-size:1.6px;fill:var(--muted)}' +
     '.lunar-date{font-size:1.5px;fill:var(--muted)}' +
@@ -39,7 +39,7 @@ function weeklyStyle(theme: ThemeConfig): string {
     '.week-number{font-size:1.8px;fill:var(--muted)}' +
     '.page-num{font-size:1.8px;fill:var(--muted)}' +
     '.hair{stroke:var(--hair);stroke-opacity:.6;stroke-width:.25}' +
-    '.cross-line{stroke:var(--cross-stroke);stroke-width:.25}' +
+    '.cross-line{stroke:var(--cross-stroke);stroke-width:.15}' +
     '</style>'
   )
 }
@@ -75,16 +75,23 @@ function miniCalendar(weekMonday: Date, language: Language, weekStart: WeekStart
   return group(header) + group(cells.join(''))
 }
 
-// 月份数字 + 年份：年份在月份下方，年份右端 = 月份数字右端
+// 月份数字 + 年份：均右对齐到同一右端，保证任何月份都尾对齐
+// 月份数字顶边固定；年份下缘对齐当月小月历实际下缘（行数不同下缘会变）
 function weeklyOverview(weekMonday: Date, language: Language, weekStart: WeekStart): string {
   const month = weekMonday.getMonth() + 1
   const year = weekMonday.getFullYear()
-  const monthRight = 4 + String(month).length * 6.6
+  const right = 12.2
+
+  const offset = getFirstDayOfWeek(year, month, weekStart)
+  const daysInMonth = getDaysInMonth(year, month)
+  const rows = Math.ceil((offset + daysInMonth) / 7)
+  // 小月历经 translate(17,2) 后，最后一行单元格下缘（group 坐标）
+  const miniBottom = 2 + (4.2 + (rows - 1) * 2)
 
   const inner =
-    text(String(month), { x: 4, y: 13, class: 'month-large' }) +
-    text(String(year), { x: monthRight, y: 16, class: 'year-small', 'text-anchor': 'end' }) +
-    group(miniCalendar(weekMonday, language, weekStart), { transform: 'translate(18,2)' })
+    text(String(month), { x: right, y: 11.5, class: 'month-large', 'text-anchor': 'end' }) +
+    text(String(year), { x: right, y: miniBottom, class: 'year-small', 'text-anchor': 'end' }) +
+    group(miniCalendar(weekMonday, language, weekStart), { transform: 'translate(17,2)' })
 
   return group(inner, { id: 'weekly-overview', transform: 'translate(6,6)' })
 }
@@ -95,14 +102,14 @@ function dayPanel(date: Date, pos: { x: number; y: number }, language: Language)
   const holiday = getHolidaysForLanguage(language, date)[0]
   const weekLabel = language === 'en' ? EN_WEEKDAYS[(date.getDay() + 6) % 7] : String((date.getDay() + 6) % 7 + 1)
 
-  // 日期数字：下边缘贴面板上框线（面板顶=0），数字位于框上方
-  // 星期：数字下方（面板框内顶部）；标签框围绕数字+星期（下边中央掏空）
-  const bw = 11
+  // 日期数字：垂直中线对齐面板上框线（面板顶=0）
+  // 星期：数字下方；圆角标签框围绕数字+星期（下边中央掏空）
+  const bw = 8
   const bh = 6
   const bx = 25 - bw / 2
-  const by = -4.2 // 框顶（数字上方）
+  const by = -2.6 // 框顶（数字上方）
   const half = bw / 2
-  const gap = 2
+  const gap = 1.5
   const badgePath =
     `M${bx + 0.8} ${by} H${bx + bw - 0.8} Q${bx + bw} ${by} ${bx + bw} ${by + 0.8} V${by + bh - 0.8} ` +
     `Q${bx + bw} ${by + bh} ${bx + bw - 0.8} ${by + bh} H${bx + half + gap} M${bx + half - gap} ${by + bh} H${bx + 0.8} ` +
@@ -111,8 +118,8 @@ function dayPanel(date: Date, pos: { x: number; y: number }, language: Language)
   let inner =
     path(PANEL_BORDER_PATH, { class: 'panel-border' }) +
     path(badgePath, { class: 'badge' }) +
-    text(String(date.getDate()), { x: 25, y: -0.2, class: 'panel-date', 'text-anchor': 'middle' }) +
-    text(weekLabel, { x: 25, y: 1.6, class: 'weekday-small', 'text-anchor': 'middle' }) +
+    text(String(date.getDate()), { x: 25, y: 1.4, class: 'panel-date', 'text-anchor': 'middle' }) +
+    text(weekLabel, { x: 25, y: 3.2, class: 'weekday-small', 'text-anchor': 'middle' }) +
     line({ x1: 25, y1: 5, x2: 25, y2: 72, class: 'cross-line' }) +
     circle({ cx: 25, cy: 40, r: 0.5, fill: 'var(--accent)' })
 

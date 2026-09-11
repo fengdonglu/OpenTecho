@@ -75,6 +75,21 @@ function sectionId(section: PageSection): string {
   }
 }
 
+/**
+ * 页面对象只保存元数据，svg 在首次访问时才渲染并缓存，
+ * 避免每次配置变化都同步生成整本文档的全部 SVG。
+ */
+function createPage(base: Omit<PageData, 'svg'>, render: () => string): PageData {
+  let cached: string | undefined
+  return {
+    ...base,
+    get svg(): string {
+      if (cached === undefined) cached = render()
+      return cached
+    },
+  }
+}
+
 function pushMonth(
   pages: PageData[],
   theme: ThemeConfig,
@@ -83,31 +98,41 @@ function pushMonth(
   month: number
 ): void {
   const monthly: PageSection = { kind: 'monthly', year, month }
-  pages.push({
-    id: sectionId(monthly),
-    section: monthly,
-    title: sectionTitle(monthly, config.year, config.language),
-    svg: svgDocument(
-      SPREAD_DIMENSIONS,
-      theme,
-      monthlyBody(year, month, theme, config.language, config.weekStart)
-    ),
-    metadata: { pageNumber: pages.length + 1, dimensions: SPREAD_DIMENSIONS },
-  })
+  pages.push(
+    createPage(
+      {
+        id: sectionId(monthly),
+        section: monthly,
+        title: sectionTitle(monthly, config.year, config.language),
+        metadata: { pageNumber: pages.length + 1, dimensions: SPREAD_DIMENSIONS },
+      },
+      () =>
+        svgDocument(
+          SPREAD_DIMENSIONS,
+          theme,
+          monthlyBody(year, month, theme, config.language, config.weekStart)
+        )
+    )
+  )
 
   getWeeksOfMonth(year, month, config.weekStart).forEach((monday, index) => {
     const weekly: PageSection = { kind: 'weekly', year, month, week: index + 1 }
-    pages.push({
-      id: sectionId(weekly),
-      section: weekly,
-      title: sectionTitle(weekly, config.year, config.language),
-      svg: svgDocument(
-        SPREAD_DIMENSIONS,
-        theme,
-        weeklyBody(monday, theme, config.language, config.weekStart, config.year)
-      ),
-      metadata: { pageNumber: pages.length + 1, dimensions: SPREAD_DIMENSIONS },
-    })
+    pages.push(
+      createPage(
+        {
+          id: sectionId(weekly),
+          section: weekly,
+          title: sectionTitle(weekly, config.year, config.language),
+          metadata: { pageNumber: pages.length + 1, dimensions: SPREAD_DIMENSIONS },
+        },
+        () =>
+          svgDocument(
+            SPREAD_DIMENSIONS,
+            theme,
+            weeklyBody(monday, theme, config.language, config.weekStart, config.year)
+          )
+      )
+    )
   })
 }
 
@@ -117,30 +142,30 @@ export function generateDocument(config: GeneratorConfig): GeneratedDocument {
   const pages: PageData[] = []
 
   const threeYear: PageSection = { kind: 'threeYear' }
-  pages.push({
-    id: sectionId(threeYear),
-    section: threeYear,
-    title: sectionTitle(threeYear, mainYear, config.language),
-    svg: svgDocument(
-      SPREAD_DIMENSIONS,
-      theme,
-      threeYearBody(mainYear, theme, config.language, config.weekStart)
-    ),
-    metadata: { pageNumber: 1, dimensions: SPREAD_DIMENSIONS },
-  })
+  pages.push(
+    createPage(
+      {
+        id: sectionId(threeYear),
+        section: threeYear,
+        title: sectionTitle(threeYear, mainYear, config.language),
+        metadata: { pageNumber: 1, dimensions: SPREAD_DIMENSIONS },
+      },
+      () => svgDocument(SPREAD_DIMENSIONS, theme, threeYearBody(mainYear, theme, config.language, config.weekStart))
+    )
+  )
 
   const yearly: PageSection = { kind: 'yearly' }
-  pages.push({
-    id: sectionId(yearly),
-    section: yearly,
-    title: sectionTitle(yearly, mainYear, config.language),
-    svg: svgDocument(
-      SPREAD_DIMENSIONS,
-      theme,
-      yearlyBody(mainYear, theme, config.language, config.weekStart)
-    ),
-    metadata: { pageNumber: pages.length + 1, dimensions: SPREAD_DIMENSIONS },
-  })
+  pages.push(
+    createPage(
+      {
+        id: sectionId(yearly),
+        section: yearly,
+        title: sectionTitle(yearly, mainYear, config.language),
+        metadata: { pageNumber: pages.length + 1, dimensions: SPREAD_DIMENSIONS },
+      },
+      () => svgDocument(SPREAD_DIMENSIONS, theme, yearlyBody(mainYear, theme, config.language, config.weekStart))
+    )
+  )
 
   for (const month of [10, 11, 12]) {
     pushMonth(pages, theme, config, mainYear - 1, month)
@@ -153,61 +178,48 @@ export function generateDocument(config: GeneratorConfig): GeneratedDocument {
   }
 
   const intro: PageSection = { kind: 'intro' }
-  pages.push({
-    id: sectionId(intro),
-    section: intro,
-    title: sectionTitle(intro, mainYear, config.language),
-    svg: svgDocument(B6_DIMENSIONS, theme, introBody(B6_DIMENSIONS, theme, config.language)),
-    metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
-  })
+  pages.push(
+    createPage(
+      {
+        id: sectionId(intro),
+        section: intro,
+        title: sectionTitle(intro, mainYear, config.language),
+        metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
+      },
+      () => svgDocument(B6_DIMENSIONS, theme, introBody(B6_DIMENSIONS, theme, config.language))
+    )
+  )
 
-  for (let index = 1; index <= config.gridCount; index++) {
-    const section: PageSection = { kind: 'grid', index }
-    pages.push({
-      id: sectionId(section),
-      section,
-      title: sectionTitle(section, mainYear, config.language),
-      svg: svgDocument(B6_DIMENSIONS, theme, gridBody(B6_DIMENSIONS, theme)),
-      metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
-    })
-  }
-  for (let index = 1; index <= config.blankCount; index++) {
-    const section: PageSection = { kind: 'blank', index }
-    pages.push({
-      id: sectionId(section),
-      section,
-      title: sectionTitle(section, mainYear, config.language),
-      svg: svgDocument(B6_DIMENSIONS, theme, blankBody(B6_DIMENSIONS, theme)),
-      metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
-    })
-  }
-  for (let index = 1; index <= config.contactCount; index++) {
-    const section: PageSection = { kind: 'contact', index }
-    pages.push({
-      id: sectionId(section),
-      section,
-      title: sectionTitle(section, mainYear, config.language),
-      svg: svgDocument(
-        B6_DIMENSIONS,
-        theme,
-        contactBody(B6_DIMENSIONS, theme, config.language)
-      ),
-      metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
-    })
-  }
-  for (let index = 1; index <= config.meetingCount; index++) {
-    const section: PageSection = { kind: 'meeting', index }
-    pages.push({
-      id: sectionId(section),
-      section,
-      title: sectionTitle(section, mainYear, config.language),
-      svg: svgDocument(
-        B6_DIMENSIONS,
-        theme,
-        meetingBody(B6_DIMENSIONS, theme, config.language)
-      ),
-      metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
-    })
+  const appendixSpecs = [
+    { kind: 'grid' as const, count: config.gridCount, render: () => gridBody(B6_DIMENSIONS, theme) },
+    { kind: 'blank' as const, count: config.blankCount, render: () => blankBody(B6_DIMENSIONS, theme) },
+    {
+      kind: 'contact' as const,
+      count: config.contactCount,
+      render: () => contactBody(B6_DIMENSIONS, theme, config.language),
+    },
+    {
+      kind: 'meeting' as const,
+      count: config.meetingCount,
+      render: () => meetingBody(B6_DIMENSIONS, theme, config.language),
+    },
+  ]
+
+  for (const spec of appendixSpecs) {
+    for (let index = 1; index <= spec.count; index++) {
+      const section = { kind: spec.kind, index } as PageSection
+      pages.push(
+        createPage(
+          {
+            id: sectionId(section),
+            section,
+            title: sectionTitle(section, mainYear, config.language),
+            metadata: { pageNumber: pages.length + 1, dimensions: B6_DIMENSIONS },
+          },
+          () => svgDocument(B6_DIMENSIONS, theme, spec.render())
+        )
+      )
+    }
   }
 
   return { config, pages }

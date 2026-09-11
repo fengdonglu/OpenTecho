@@ -57,7 +57,6 @@ export function buildMonthGrid(
   const cells: CalendarDay[] = []
   for (let i = 0; i < totalCells; i++) {
     const position = i - offset
-    let date: Date
     let day: number
     let m: number
     let y: number
@@ -80,7 +79,7 @@ export function buildMonthGrid(
       inCurrentMonth = true
     }
 
-    date = new Date(y, m - 1, day)
+    const date = new Date(y, m - 1, day)
     cells.push({ date, day, month: m, year: y, inCurrentMonth })
   }
   return cells

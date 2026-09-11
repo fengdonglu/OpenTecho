@@ -9,12 +9,14 @@
 ## 特性
 
 - **网页即用**：纯前端，无需安装，全部数据本地处理、不上传
+- **可安装、可离线（PWA）**：在浏览器中「安装」为应用，首次访问后断网也能继续使用
+- **记住设置**：年份 / 主题 / 语言 / 每周起始 / 附录数量会保存在本地，刷新后自动恢复
 - **跨年编排**：上年 Q4（10–12 月）→ 全年（1–12 月）→ 次年 Q1（1–3 月），每月后接当月周页
 - **内置农历与节日**：农历换算（基于 [lunar-javascript](https://github.com/6tail/lunar-javascript)）、法定假日与民间节日标记
 - **多主题**：极简 / 樱花 / 奶茶 / 柠檬 / 抹茶 / 青 / 靛蓝 / 葡萄，可切换「主题色 / 黑白灰」导出
 - **多语言**：简体中文 / 繁體中文 / English
 - **每周起始可配置**：周一 / 周日
-- **导出**：SVG（逐页或全部）、PDF（200dpi JPEG，B6 单页 125×176mm、对开 B5 250×176mm）
+- **导出**：SVG（逐页或全部）、PDF（200dpi JPEG，B6 单页 125×176mm、对开 B5 250×176mm），带进度与取消
 
 ## 技术栈
 
@@ -62,8 +64,8 @@ public/                   # favicon 等静态资源
 
 ## 部署
 
-- **GitHub Pages**：push 到 `main`/`master` 自动构建部署（见 `.github/workflows/deploy.yml`）
-- **自托管**：push `v*` 标签触发 release 工作流，自动构建 `dist` 并打包成 zip 上传到 release，下载解压后用任意静态服务器托管即可
+- **GitHub Pages**：push 到 `main`/`master` 自动构建部署（见 `.github/workflows/deploy.yml`）。部署后的站点即 PWA——打开后使用浏览器的「安装」即可作为离线应用使用。
+- **自托管**：push `v*` 标签触发 release 工作流，自动构建 `dist` 并打包成 zip 上传到 release，下载解压后用任意静态服务器托管即可。注意：PWA 的安装/离线需要以 **http(s)** 方式访问（如 `npx serve dist`）；直接用 `file://` 双击打开 `index.html` 不可用。
 
 ## 致谢
 

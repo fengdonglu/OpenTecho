@@ -9,12 +9,14 @@ An open-source digital planner generator. Runs entirely in the browser — no in
 ## Features
 
 - **Runs in the browser**: pure frontend, no installation, all data processed locally (nothing is uploaded)
+- **Installable & offline (PWA)**: install it as an app from the browser and keep using it offline after the first visit
+- **Remembers your settings**: year / theme / language / week start / appendix counts are saved locally and restored on reload
 - **Cross-year layout**: previous year Q4 (Oct–Dec) → full year (Jan–Dec) → next year Q1 (Jan–Mar), each month followed by its weekly pages
 - **Lunar calendar & holidays**: lunar conversion via [lunar-javascript](https://github.com/6tail/lunar-javascript), plus statutory and folk holiday markers
 - **Multiple themes**: Minimal / Sakura / Milk Tea / Lemon / Matcha / Cyan / Indigo / Grape, with a color/grayscale toggle for export
 - **i18n**: 简体中文 / 繁體中文 / English
 - **Configurable week start**: Monday / Sunday
-- **Export**: SVG (single page or all pages) or PDF (200dpi JPEG, B6 single page 125×176mm, B5 spread 250×176mm)
+- **Export**: SVG (single page or all pages) or PDF (200dpi JPEG, B6 single page 125×176mm, B5 spread 250×176mm), with progress and cancel
 
 ## Tech Stack
 
@@ -62,8 +64,8 @@ public/                   # favicon & static assets
 
 ## Deployment
 
-- **GitHub Pages**: pushing to `main`/`master` auto-builds and deploys (see `.github/workflows/deploy.yml`)
-- **Self-hosted**: pushing a `v*` tag triggers a release workflow that builds `dist`, packages it into a zip, and uploads it as a release asset — download and serve the extracted folder with any static file server
+- **GitHub Pages**: pushing to `main`/`master` auto-builds and deploys (see `.github/workflows/deploy.yml`). The deployed site is a PWA — open it and use the browser's **Install** action to add it as an offline app.
+- **Self-hosted**: pushing a `v*` tag triggers a release workflow that builds `dist`, packages it into a zip, and uploads it as a release asset — download and serve the extracted folder with any static file server. Note: PWA install/offline requires serving over **http(s)** (e.g. `npx serve dist`); opening `index.html` via `file://` will not work.
 
 ## Acknowledgements
 

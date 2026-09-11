@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{
-  svg: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    svg: string
+    alt?: string
+    emptyText?: string
+  }>(),
+  {
+    alt: '',
+    emptyText: '',
+  }
+)
 
 const src = computed(() => {
   const encoded = encodeURIComponent(props.svg)
@@ -13,8 +21,8 @@ const src = computed(() => {
 
 <template>
   <div class="svg-preview">
-    <img v-if="svg" :src="src" alt="手帐页面预览" />
-    <p v-else class="svg-preview__empty">暂无预览</p>
+    <img v-if="svg" :src="src" :alt="alt" />
+    <p v-else class="svg-preview__empty">{{ emptyText }}</p>
   </div>
 </template>
 

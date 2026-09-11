@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import { generateDocument } from '@/generators/DocumentGenerator'
 import { getWeeksOfMonth } from '@/utils/date'
 import { getDefaultYear } from '@/utils/constants'
+import { loadSettings, saveSettings } from '@/utils/persistence'
+import type { PersistedSettings, StorageLike } from '@/utils/persistence'
 import type {
   GeneratedDocument,
   GeneratorConfig,
@@ -41,17 +43,28 @@ function computeInitialIndex(pages: PageData[], weekStart: WeekStart): number {
   return 0
 }
 
+function getStorage(): StorageLike | null {
+  try {
+    return typeof localStorage !== 'undefined' ? localStorage : null
+  } catch {
+    return null
+  }
+}
+
 export const useAppStore = defineStore('app', () => {
-  const year = ref(getDefaultYear())
-  const theme = ref<ThemeType>('minimal')
-  const language = ref<Language>('en')
-  const weekStart = ref<WeekStart>('monday')
-  const gridCount = ref(6)
-  const blankCount = ref(4)
-  const contactCount = ref(2)
-  const meetingCount = ref(2)
-  const useThemeForDownload = ref(true)
-  const currentPage = ref(0)
+  const storage = getStorage()
+  const saved = storage ? loadSettings(storage) : {}
+
+  const year = ref(saved.year ?? getDefaultYear())
+  const theme = ref<ThemeType>(saved.theme ?? 'minimal')
+  const language = ref<Language>(saved.language ?? 'en')
+  const weekStart = ref<WeekStart>(saved.weekStart ?? 'monday')
+  const gridCount = ref(saved.gridCount ?? 6)
+  const blankCount = ref(saved.blankCount ?? 4)
+  const contactCount = ref(saved.contactCount ?? 2)
+  const meetingCount = ref(saved.meetingCount ?? 2)
+  const useThemeForDownload = ref(saved.useThemeForDownload ?? true)
+  const currentPageRaw = ref(0)
 
   const effectiveTheme = computed<ThemeType>(() =>
     useThemeForDownload.value ? theme.value : 'minimal'
@@ -72,6 +85,17 @@ export const useAppStore = defineStore('app', () => {
 
   const pageCount = computed<number>(() => document.value.pages.length)
 
+  const currentPage = computed<number>({
+    get: () => {
+      const max = pageCount.value - 1
+      return max < 0 ? 0 : Math.min(currentPageRaw.value, max)
+    },
+    set: (index: number) => {
+      const max = pageCount.value - 1
+      currentPageRaw.value = Math.max(0, Math.min(index, max < 0 ? 0 : max))
+    },
+  })
+
   const currentSvg = computed<string>(() => document.value.pages[currentPage.value]?.svg ?? '')
 
   const currentTitle = computed<string>(() => document.value.pages[currentPage.value]?.title ?? '')
@@ -81,6 +105,35 @@ export const useAppStore = defineStore('app', () => {
   watch([year, weekStart], () => {
     currentPage.value = computeInitialIndex(document.value.pages, weekStart.value)
   })
+
+  watch(
+    [
+      year,
+      theme,
+      language,
+      weekStart,
+      gridCount,
+      blankCount,
+      contactCount,
+      meetingCount,
+      useThemeForDownload,
+    ],
+    () => {
+      if (!storage) return
+      const settings: PersistedSettings = {
+        year: year.value,
+        theme: theme.value,
+        language: language.value,
+        weekStart: weekStart.value,
+        gridCount: gridCount.value,
+        blankCount: blankCount.value,
+        contactCount: contactCount.value,
+        meetingCount: meetingCount.value,
+        useThemeForDownload: useThemeForDownload.value,
+      }
+      saveSettings(storage, settings)
+    }
+  )
 
   function setPage(index: number): void {
     if (index >= 0 && index < document.value.pages.length) {
